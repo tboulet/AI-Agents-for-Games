@@ -13,7 +13,7 @@ setup(
     # Needed for dependencies
     install_requires=requirements[1:],
     dependency_links=requirements[:1],
-    package_data={"configs": "*.yaml"},
+        # package_data={"configs": "*.yaml"},
     version="0.0.1",
     license="MIT",
     description="GamesAI is a library of AI agents for games.",
