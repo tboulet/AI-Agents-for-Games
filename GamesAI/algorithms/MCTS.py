@@ -4,9 +4,9 @@ from collections import defaultdict
 import math
 from typing import Iterable
 
-from GamesAI.GameContent import State, GameType, ActionType
+from GamesAI.div.GameContent import State, GameType, ActionType
 from GamesAI.Player import Player
-from GamesAI.utils import argmax
+from GamesAI.div.utils import argmax
 
 NodeType = object
 
@@ -51,7 +51,7 @@ class Node:
 
 class MonteCarloTreeSearch(Player):
     """Player that uses Monte-Carlo Tree Search method for evaluating node.
-    Only works for 2 player games, zero-sum game."""
+    Only works for 2 player games, deterministic, zero-sum game."""
     agent_name = "MCTS"
     
     def __init__(self, game: GameType, game_name: str, agent_name: str, n_rollouts : int = 50) -> None:

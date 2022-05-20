@@ -3,9 +3,12 @@ import random
 from time import time
 from typing import Callable, Union
 
-from GamesAI.GameContent import State, GameType, ActionType
-from GamesAI.utils import argmin, argmax
+from GamesAI.div.GameContent import State, GameType, ActionType
+from GamesAI.div.utils import argmin, argmax
 
+
+
+#Basic algorithm for games.
 class Player(ABC):
     """The class for defining a PLAYER in a GAME. A player has a game_name inside the game and an agent_name that explains its strategy.
     It is defined by its get_action method.
@@ -39,9 +42,14 @@ class Player(ABC):
     def get_action(self, state: State) -> ActionType:
         """Return the action to be played in the given state"""
         pass
+ 
+    
+class NonDeterministicPlayer(Player):
+    """A player that can play in non deterministic games."""
+    agent_name = "NonDeterministicPlayer"
 
 
-class RandomPlayer(Player):
+class RandomPlayer(NonDeterministicPlayer):
     """A player that plays randomly."""
     agent_name = "RandomPlayer"
     
@@ -53,7 +61,7 @@ class RandomPlayer(Player):
         return random.choice(self.game.get_actions(state))
     
     
-class HumanPlayer(Player):
+class HumanPlayer(NonDeterministicPlayer):
     """A player asking for input for actions to take. Adapted to int and str actions."""
     agent_name = "Human"
     
@@ -165,7 +173,7 @@ class AlphaBeta(Player):
 
     
     
-class MinimaxPlus(Player):
+class MinimaxPlus(NonDeterministicPlayer):
     """A generalization of Minimax to games wtih any number of players and with randomness."""
     agent_name = "MinimaxPlus"
     
@@ -216,4 +224,5 @@ class MinimaxPlus(Player):
         
 
 
-from algorithms.MCTS import MonteCarloTreeSearch
+#Algorithm from other modules that requires their own modules.
+from GamesAI.algorithms.MCTS import MonteCarloTreeSearch

@@ -1,3 +1,4 @@
+import context
 from GamesAI.Player import Player, RandomPlayer, HumanPlayer, Minimax, AlphaBeta, MinimaxPlus, MonteCarloTreeSearch
 from GamesAI.games.tictactoe import TicTacToeGame, TicTacToeRandomGame
 

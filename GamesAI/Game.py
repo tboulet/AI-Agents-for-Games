@@ -4,9 +4,9 @@ from time import sleep
 from typing import Union
 import random
 #Game solving module imports
-from GamesAI.utils import Constant
-from GamesAI.GameContent import State, ActionType
-from GamesAI.Player import Player
+from GamesAI.div.utils import Constant
+from GamesAI.div.GameContent import State, ActionType
+from GamesAI.Player import Player, NonDeterministicPlayer
 
 
 class Game(ABC):
@@ -103,10 +103,14 @@ class Game(ABC):
             state = self.get_result(state, action)
 
 
-
-class RandomGame(Game):
+class NonDeterministicGame(Game):
     """Non deterministic game, where randomness happens at some node."""
-    def __init__(self, agents: dict[str, type]) -> None:
+    def __init__(self, agents: dict[str, Union[type, tuple[type, dict]]]) -> None:
+        for player_class in agents.values():
+            if isinstance(player_class, tuple):
+                player_class = player_class[0]
+            if not issubclass(player_class, NonDeterministicPlayer):
+                raise Exception(f"Non deterministic game must have only NonDeterministicPlayer players (player inheriting NonDeterministicPlayer class) but {player_class.agent_name} is not.")
         super().__init__(agents)
     
     @abstractmethod

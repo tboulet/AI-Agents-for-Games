@@ -1,5 +1,5 @@
 from typing import Union
-from GamesAI.Game import Game, Player, State, RandomGame
+from GamesAI.Game import Game, Player, State, NonDeterministicGame
 
 class TicTacToeState(State):
     
@@ -91,7 +91,7 @@ class TicTacToeGame(Game):
     
 
 
-class TicTacToeRandomGame(TicTacToeGame, RandomGame):
+class TicTacToeRandomGame(TicTacToeGame, NonDeterministicGame):
     """TicTacToe game where a random agent randomly reset one of the box."""
     
     def __init__(self, agents: dict[str, type]) -> None:
