@@ -1,3 +1,8 @@
+"""Module for defining the Game object.
+
+Games should be define as subclasses of Game or NonDeterministicGame. They should implement abstract methods as defined in the Game abstract class.
+"""
+
 #Tool imports
 from abc import ABC, abstractmethod
 from time import sleep
@@ -11,13 +16,22 @@ from GamesAI.Player import Player, NonDeterministicPlayer
 
 class Game(ABC):
     """The class for defining a GAME problem.
-    Standard games are deterministic, observable, turn-taking, two-player, zero-sum
+    Standard games are deterministic, observable, turn-taking.
     """
     
     def __init__(self, agents : dict[str, Union[type, tuple[type, dict]]]) -> None:
         """Creation of a GAME object.
         agents is a dictionnary with game_name as keys and a class of player as values.
-        If the player class initializer requires arguments, the value can instead be a tuple (PlayerClass, kwargs)."""
+        If the player class initializer requires arguments, the value can instead be a tuple (PlayerClass, kwargs).
+        
+        A subclass of Game should implement the following methods :
+        - get_start_state() : return the initial state of the game
+        - get_player_playing(state) : return the player playing at the given state
+        - get_actions(state) : return the list of actions available at the given state
+        - get_result(state, action) : return the state reached by the given action in the given state
+        - is_terminal_state(state) : return True if the given state is a terminal state
+        - get_utilites(state) : return the utilities of the players at the given state
+        """
         
         if not hasattr(self, 'names'): raise Exception("Game class must define class attribute .names")
         if self.names != set(agents.keys()): raise Exception("Game class names does not match agents names (agents keys)")
@@ -48,12 +62,12 @@ class Game(ABC):
         pass
     
     @abstractmethod
-    def get_actions(self, state : State) -> list[object]:
+    def get_actions(self, state : State) -> list[ActionType]:
         """Return the list of actions available in the given state for the player playing in the state"""
         pass
     
     @abstractmethod
-    def get_result(self, state : State, action : object) -> State:
+    def get_result(self, state : State, action : ActionType) -> State:
         """Return the state reached by the game after having played the given action in the given state"""
         pass
     
@@ -104,7 +118,11 @@ class Game(ABC):
 
 
 class NonDeterministicGame(Game):
-    """Non deterministic game, where randomness happens at some node."""
+    """Non deterministic game, where randomness happens at some node.
+    
+    Subclasses should implement the methods of Game as well as the get_random_action_distribution method.
+    - get_random_action_distribution(state) : return the distribution of actions available at the given state for the player playing at the state.
+    """
     def __init__(self, agents: dict[str, Union[type, tuple[type, dict]]]) -> None:
         for player_class in agents.values():
             if isinstance(player_class, tuple):
@@ -114,7 +132,7 @@ class NonDeterministicGame(Game):
         super().__init__(agents)
     
     @abstractmethod
-    def get_random_action_distribution(self, state : State) -> dict[object, float]:
+    def get_random_action_distribution(self, state : State) -> dict[ActionType, float]:
         """Return the action distribution for the actions available in the given random state"""
         if self.get_player_playing is not None:
             raise Exception("The state is not a random state.")
