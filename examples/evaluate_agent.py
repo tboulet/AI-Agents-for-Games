@@ -1,5 +1,5 @@
 from GamesAI.Player import Player, RandomPlayer, HumanPlayer, Minimax, AlphaBeta, MinimaxPlus, MonteCarloTreeSearch
-from games.tictactoe import TicTacToeGame, TicTacToeRandomGame
+from GamesAI.games.tictactoe import TicTacToeGame, TicTacToeRandomGame
 
 def h(state):
     return {"X" : 0, "O" : 0}
