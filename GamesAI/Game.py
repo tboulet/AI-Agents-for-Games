@@ -86,6 +86,11 @@ class Game(ABC):
         """Return the players of the game with their game names as keys"""
         return self.players
     
+    def get_names(self) -> set:
+        """Return the set of the game names"""
+        if not hasattr(self, 'names'): raise Exception("Game class must define class attribute .names")
+        return self.names
+    
     def play_game(self, verbose : int, wait_time : float = 0) -> State:
         """Play the game until the end, print the information, return the final state.
         verbose = 0 : no print

@@ -28,9 +28,9 @@ class TicTacToeState(State):
 
 
 class TicTacToeGame(Game):
+    names = {"X", "O"}
     
     def __init__(self, agents : dict[str, type]) -> None:
-        self.names = {"X", "O"}
         super().__init__(agents)
         board = [0, 0, 0, 0, 0, 0, 0, 0, 0]
         self.initial_state = TicTacToeState(self.players["X"], board)
