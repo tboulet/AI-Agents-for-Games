@@ -5,7 +5,7 @@ with open("requirements.txt", "r") as f:
 
 setup(
     name="GamesAI",
-    url="https://github.com/tboulet/GamesAI",
+    url="https://github.com/tboulet/AI-Agents-for-Games",
     author="Timothé Boulet",
     author_email="timothe.boulet0@gmail.com",
     
