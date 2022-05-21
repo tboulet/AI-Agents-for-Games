@@ -15,5 +15,19 @@ class State(ABC):
     def __eq__(self, other) -> bool:
         pass
 
+class Percept(ABC):
+    @abstractmethod
+    def __str__(self) -> str:
+        pass
+    
+    @abstractmethod
+    def __hash__(self) -> int:
+        pass
+    
+    @abstractmethod
+    def __eq__(self, other) -> bool:
+        pass
+
+
 GameType = object
 ActionType = object

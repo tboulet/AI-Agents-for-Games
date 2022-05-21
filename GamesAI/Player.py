@@ -3,7 +3,7 @@ import random
 from time import time
 from typing import Callable, Union
 
-from GamesAI.div.GameContent import State, GameType, ActionType
+from GamesAI.div.GameContent import State, Percept, GameType, ActionType
 from GamesAI.div.utils import argmin, argmax
 
 
@@ -46,10 +46,13 @@ class Player(ABC):
     
 class NonDeterministicPlayer(Player):
     """A player that can play in non deterministic games."""
-    agent_name = "NonDeterministicPlayer"
+    agent_name = "NonDeterministicPlayer"    
 
+class NonFullyObservablePlayer(Player):
+    """A player that can play in non fully observable games."""
+    agent_name = "NonFullyObservablePlayer"        
 
-class RandomPlayer(NonDeterministicPlayer):
+class RandomPlayer(NonDeterministicPlayer, NonFullyObservablePlayer):
     """A player that plays randomly."""
     agent_name = "RandomPlayer"
     
@@ -61,7 +64,7 @@ class RandomPlayer(NonDeterministicPlayer):
         return random.choice(self.game.get_actions(state))
     
     
-class HumanPlayer(NonDeterministicPlayer):
+class HumanPlayer(NonDeterministicPlayer, NonFullyObservablePlayer):
     """A player asking for input for actions to take. Adapted to int and str actions."""
     agent_name = "Human"
     
@@ -77,7 +80,7 @@ class HumanPlayer(NonDeterministicPlayer):
                 return action
             elif action == '':
                 continue
-            elif int(action) in actions:
+            elif action.isdigit() and int(action) in actions:
                 return int(action)
             else:
                 print("Invalid action")

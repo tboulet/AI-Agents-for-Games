@@ -10,8 +10,8 @@ from typing import Union
 import random
 #Game solving module imports
 from GamesAI.div.utils import Constant
-from GamesAI.div.GameContent import State, ActionType
-from GamesAI.Player import Player, NonDeterministicPlayer
+from GamesAI.div.GameContent import State, Percept, ActionType
+from GamesAI.Player import Player, NonDeterministicPlayer, NonFullyObservablePlayer
 
 
 class Game(ABC):
@@ -146,4 +146,57 @@ class NonDeterministicGame(Game):
             raise Exception("The state has no action available.")
         return {action : 1 / len(actions) for action in actions}
         
+
+
+
+class NonFullyObservableGame(Game):
+    """Non fully observable game are games where each agent does not have access to the complete state but rather only some information called a percept.
     
+    Sub classes should implement the methods of Game as well as the get_percept method.
+    - get_percept_method(state, player) : return the percept of the given state for a certain player
+    """
+    def __init__(self, agents: dict[str, Union[type, tuple[type, dict]]]) -> None:
+        for player_class in agents.values():
+            if isinstance(player_class, tuple):
+                player_class = player_class[0]
+            if not issubclass(player_class, NonFullyObservablePlayer):
+                raise Exception(f"Non fully observable game must have only NonFullyObservablePlayer players (player inheriting NonFullyObservablePlayer class) but {player_class.agent_name} is not.")
+        super().__init__(agents)
+        
+    @abstractmethod
+    def get_percept(self, state : State, player : NonFullyObservablePlayer) -> Percept:
+        """Return the percept of the given state for a certain player"""
+    
+    def play_game(self, verbose : int, wait_time : float = 0) -> State:
+        """Play the game until the end, print the information, return the final state.
+        verbose = 0 : no print
+        verbose = 1 : print game result (utilities for each player)
+        verbose = 2 : print game result and state at each step
+        """
+        state = self.get_start_state()
+        if verbose >= 1: print("Starting game ...")
+        while True:
+            sleep(wait_time)
+            player = self.get_player_playing(state)
+            percept = self.get_percept(state, player)
+            if verbose >= 2:
+                print("State: ", state)
+                print("Percept: ", percept)
+            if self.is_terminal_state(state):
+                if verbose >= 1:
+                    print("\tEnd of game, utilities of players :")
+                    for player in self.players.values():
+                        print(player, ": ", self.get_utilities(state)[player])
+                return state
+            
+            if player is None:
+                distribution = self.get_random_action_distribution(state)
+                action = random.choices(list(distribution.keys()), weights = list(distribution.values()))[0]
+                if verbose >= 2:
+                    print(f"Random action : {action}")
+            else:
+                distribution = player.get_action_distribution(percept)
+                action = random.choices(list(distribution.keys()), weights = list(distribution.values()))[0]
+                if verbose >= 2:
+                    print(f"{player} action : {action}")
+            state = self.get_result(state, action)
