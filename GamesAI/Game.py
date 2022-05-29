@@ -10,7 +10,7 @@ from typing import Union
 import random
 #Game solving module imports
 from GamesAI.div.utils import Constant
-from GamesAI.div.GameContent import State, Percept, ActionType
+from GamesAI.div.GameContent import State, Percept, Action
 from GamesAI.Player import Player, NonDeterministicPlayer, NonFullyObservablePlayer
 
 
@@ -62,12 +62,12 @@ class Game(ABC):
         pass
     
     @abstractmethod
-    def get_actions(self, state : State) -> list[ActionType]:
+    def get_actions(self, state : State) -> list[Action]:
         """Return the list of actions available in the given state for the player playing in the state"""
         pass
     
     @abstractmethod
-    def get_result(self, state : State, action : ActionType) -> State:
+    def get_result(self, state : State, action : Action) -> State:
         """Return the state reached by the game after having played the given action in the given state"""
         pass
     
@@ -137,7 +137,7 @@ class NonDeterministicGame(Game):
         super().__init__(agents)
     
     @abstractmethod
-    def get_random_action_distribution(self, state : State) -> dict[ActionType, float]:
+    def get_random_action_distribution(self, state : State) -> dict[Action, float]:
         """Return the action distribution for the actions available in the given random state"""
         if self.get_player_playing is not None:
             raise Exception("The state is not a random state.")

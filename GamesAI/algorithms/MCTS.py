@@ -4,11 +4,9 @@ from collections import defaultdict
 import math
 from typing import Iterable
 
-from GamesAI.div.GameContent import State, GameType, ActionType
+from GamesAI.div.GameContent import State, GameType, Action
 from GamesAI.Player import Player
 from GamesAI.div.utils import argmax
-
-NodeType = object
 
 class Node:
     """
@@ -20,7 +18,7 @@ class Node:
         self.game = game
         self.player = player
 
-    def find_children(self) -> Iterable[object]:
+    def find_children(self) -> Iterable["Node"]:
         "Return all possible successors of this node"
         childrens = list()
         for action in self.game.get_actions(self.state):
@@ -28,7 +26,7 @@ class Node:
             childrens.append(Node(state = state, game = self.game, player = self.player))
         return childrens
     
-    def find_random_child(self) -> object:
+    def find_random_child(self) -> "Node":
         "Random successor of this board state (for more efficient simulation)"
         actions = self.game.get_actions(self.state)
         action = random.choice(actions)
@@ -43,9 +41,9 @@ class Node:
         "Nodes must be hashable"
         return hash(self.state)
 
-    def __eq__(node1, node2) -> bool:
+    def __eq__(self, node2 : "Node") -> bool:
         "Nodes must be comparable"
-        return node1.state == node2.state
+        return self.state == node2.state
     
     
 
@@ -65,7 +63,7 @@ class MonteCarloTreeSearch(Player):
         self.exploration_weight = 1.4  # exploration weight, should scale with the typical variational utility. Utility variation of 1 <=> exploration_weight of 1.4.
         
 
-    def get_action(self, state: State) -> ActionType:
+    def get_action(self, state: State) -> Action:
 
         "Choose the best successor of node. (Choose a move in the game)"
         node = Node(state = state, game = self.game, player = self) 
@@ -78,7 +76,7 @@ class MonteCarloTreeSearch(Player):
         if node not in self.children:
             return node.find_random_child()
         
-        def score(action : ActionType):
+        def score(action : Action):
             n = Node(state = self.game.get_result(state, action), game = self.game, player = self)
             if self.N[n] == 0:
                 return float("-inf")  # avoid unseen moves

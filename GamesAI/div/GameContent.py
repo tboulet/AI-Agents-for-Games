@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Union
+from typing import Union, TypeVar
 
 class State(ABC):
     """The class for defining a STATE of a GAME problem."""
@@ -29,5 +29,5 @@ class Percept(ABC):
         pass
 
 
-GameType = object
-ActionType = object
+class GameType: pass
+class Action: pass

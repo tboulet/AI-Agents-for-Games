@@ -3,9 +3,8 @@ import random
 from time import time
 from typing import Callable, Union
 
-from GamesAI.div.GameContent import State, Percept, GameType, ActionType
+from GamesAI.div.GameContent import State, Percept, GameType, Action
 from GamesAI.div.utils import argmin, argmax
-
 
 
 #Basic algorithm for games.
@@ -39,7 +38,7 @@ class Player(ABC):
         return self.game_name == other.game_name
     
     @abstractmethod
-    def get_action(self, state: State) -> ActionType:
+    def get_action(self, state: State) -> Action:
         """Return the action to be played in the given state"""
         pass
  
@@ -59,7 +58,7 @@ class RandomPlayer(NonDeterministicPlayer, NonFullyObservablePlayer):
     def __init__(self, game : GameType, game_name: str, agent_name: str) -> None:
         super().__init__(game, game_name, agent_name)
         
-    def get_action(self, state: State) -> object:
+    def get_action(self, state: State) -> Action:
         """Return a random available action."""
         return random.choice(self.game.get_actions(state))
     
@@ -71,7 +70,7 @@ class HumanPlayer(NonDeterministicPlayer, NonFullyObservablePlayer):
     def __init__(self, game: GameType, game_name: str, agent_name: str) -> None:
         super().__init__(game, game_name, agent_name)
         
-    def get_action(self, state: State) -> object:
+    def get_action(self, state: State) -> Action:
         while True:
             actions = self.game.get_actions(state)
             print(f"\t{self.game_name}'s actions : {actions}")
@@ -100,7 +99,7 @@ class Minimax(Player):
         self.max_depth = max_depth
         self.heuristic = heuristic
         
-    def get_action(self, state: State) -> object:
+    def get_action(self, state: State) -> Action:
         """Return the action that maximize Max (the player) utility."""
         return argmax(indexes = self.game.get_actions(state), func = lambda action: self.min_value(self.game.get_result(state, action), depth = 1))
         
@@ -138,7 +137,7 @@ class AlphaBeta(Player):
         self.max_depth = max_depth
         self.heuristic = heuristic
     
-    def get_action(self, state: State) -> object:
+    def get_action(self, state: State) -> Action:
         """Return the action that maximize Max (the player) utility."""
         return argmax(indexes = self.game.get_actions(state), func = lambda action: self.min_value(self.game.get_result(state, action), depth = 1, alpha = float("-inf"), beta = float("inf")))
         
@@ -187,7 +186,7 @@ class MinimaxPlus(NonDeterministicPlayer):
         self.max_depth = max_depth
         self.heuristic = heuristic
         
-    def get_action(self, state: State) -> object:
+    def get_action(self, state: State) -> Action:
         """Return action that maximizes the expected utility."""
         def func_to_optimize(action):
             next_state = self.game.get_result(state, action)

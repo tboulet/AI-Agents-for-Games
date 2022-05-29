@@ -5,7 +5,7 @@ from GamesAI.games.tictactoe import TicTacToeGame, TicTacToeRandomGame
 #Define agents ie dictionnary with key being game name and value being either agent class or tuple of agent class and kwargs for initializing the class
 def h(state):
     return {"X" : 0, "O" : 0}
-agents = {"X" : RandomPlayer, "O" : (MinimaxPlus, {'max_depth': 4, 'heuristic': h})}
+agents = {"X" : HumanPlayer, "O" : (MinimaxPlus, {'max_depth': 4, 'heuristic': h})}
 # agents = {"O" : RandomPlayer, "X" : (MonteCarloTreeSearch, {'n_rollouts': 300})}
 
 #Create the game object.
